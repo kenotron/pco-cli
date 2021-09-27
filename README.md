@@ -20,6 +20,14 @@ BackEnd: Ruby on Rails
 Reference code on how to authenticate with the PCO API is here
 https://github.com/planningcenter/developers
 
+There are 2 ways to authenticate against the PCO REST API:
+1. via a Personal Access Token (PAT)
+2. as an OAUTH application
+
+The choice is really up to the use case. For example, if we're developing a script that would operate on a single organization (church), then the PAT (1) is a good idea. The token is issued as a developer account and can be thought of as a way to impersonate a real user to perform some automation.
+
+The second way (2) is meant for third party services and applications to provide functionality for many churches. These integrations can themselves be products that make use of the PCO API. Most of what is needed within a single church probably does NOT need to use this kind of integration.
+
 
 # This playground
 There's just a bit of set up to get this playground set up. Make sure you have latest node.js setup:
@@ -27,6 +35,8 @@ There's just a bit of set up to get this playground set up. Make sure you have l
 * https://git-scm.com/ - install latest for platform
 * https://nodejs.org/en/ - install the latest for your platform
 * https://classic.yarnpkg.com - install the latest for your platform
+
+The playground uses TypeScript and might grow to become a good starting point of PCO projects providing type safety in future developers' endeavors in trying to make automation for their own churches.
 
 ## Clone & Install Some Dependencies 
 
