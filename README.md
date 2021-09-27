@@ -63,7 +63,16 @@ yarn
 For security, you need your own developer account key here:
 https://api.planningcenteronline.com/oauth/applications
 
-Create a PAT on the 2nd section.
+Create a PAT on the 2nd section. This will come in the form of an application ID and a secret. In the HTTP sense, the application ID is your **username** and the secret is the **password**.
+
+In the playground, you can get started by copying the `.env.sample` to `.env`, and then substituting the right value:
+
+```js
+PCO_APPLICATION_ID=[what you get from application ID]
+PCO_SECRET=[what you get from secret]
+```
+
+After saving this file, then you're ready to try using the playground scripts to interact with the sample church data.
 
 ## Running the sample playground
 
