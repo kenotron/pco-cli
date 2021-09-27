@@ -28,6 +28,18 @@ The choice is really up to the use case. For example, if we're developing a scri
 
 The second way (2) is meant for third party services and applications to provide functionality for many churches. These integrations can themselves be products that make use of the PCO API. Most of what is needed within a single church probably does NOT need to use this kind of integration.
 
+## Using a PAT in PCO REST API
+
+To use the REST API, all you need is to supply the HTTP headers with a magical auth header:
+
+> encodedToken = base64(applicationId + ":" + secret)
+
+```
+Authorization: Basic encodedToken
+```
+
+There is an API explorer, but one can learn a LOT by using a dedicated REST API tool to set your own headers, etc.:
+https://insomnia.rest/download
 
 # This playground
 There's just a bit of set up to get this playground set up. Make sure you have latest node.js setup:
@@ -45,6 +57,13 @@ git clone https://github.com/kenotron/playground-planning-center.git
 cd playground-planning-center
 yarn
 ```
+
+## Add a .env file with PAT
+
+For security, you need your own developer account key here:
+https://api.planningcenteronline.com/oauth/applications
+
+Create a PAT on the 2nd section.
 
 ## Running the sample playground
 
