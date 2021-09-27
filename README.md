@@ -42,7 +42,7 @@ There is an API explorer, but one can learn a LOT by using a dedicated REST API 
 https://insomnia.rest/download
 
 # This playground
-There's just a bit of set up to get this playground set up. Make sure you have latest node.js setup:
+There's just a bit of set up to get this playground running. Make sure you have latest node.js setup:
 
 * https://git-scm.com/ - install latest for platform
 * https://nodejs.org/en/ - install the latest for your platform
