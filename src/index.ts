@@ -1,20 +1,25 @@
-import axios from "axios";
-
 import dotenv from "dotenv";
+import { PlanningCenterClient } from "./PlanningCenterClient";
+
 dotenv.config();
 
 async function run() {
-  const results = await axios.get(
-    "https://api.planningcenteronline.com/services/v2",
-    {
-      auth: {
-        username: process.env.PCO_APPLICATION_ID || "",
-        password: process.env.PCO_SECRET || "",
-      },
-    }
-  );
+  const applicationKey = process.env.PLANNING_CENTER_APPLICATION_ID || process.env.PCO_APPLICATION_ID || "";
+  const secret = process.env.PLANNING_CENTER_SECRET || process.env.PCO_SECRET || "";
 
-  console.log(results.data);
+  const client = new PlanningCenterClient(applicationKey, secret);
+
+  const groups = await client.get<any[]>("groups", "groups");
+  const memberships = [];
+
+  for (const group of groups) {
+    const groupMemberships = await client.get<any[]>("groups", `groups/${group.id}/memberships`);
+    for (const membership of groupMemberships) {
+      memberships.push(membership);
+    }
+  }
+
+  
 }
 
 run();
