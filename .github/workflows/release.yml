@@ -1,0 +1,26 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - run: yarn
+    - run: yarn build
+    - run: yarn pkg
+    - name: Create a Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        prerelease: true
+        title: "PCO CLI"
+        files: |
+          dist/linux/pco
+          dist/mac/pco
+          dist/win/pco.exe

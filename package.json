@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "ncc build src/index.ts -o dist",
-    "pkg": "pkg -t node16-linux,node16-win,node16-mac dist/index.js --out-path dist/bin",
+    "pkg": "node pkg.js",
     "start": "ts-node --transpile-only src/index.ts"
   },
   "dependencies": {

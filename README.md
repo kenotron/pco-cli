@@ -1,6 +1,34 @@
-# This is a little practice playground to interact with the Planning Center API
+# An _unofficial_ Planning Center CLI (PCO CLI) 
 
-## Overview of Planning Center (PCO)
+Most of every function needed to manage Planning Center has been done through the Web UI. Another way to manage Planning Center is through the Application Programming Interface (API). It requires a developer to make these integration scripts. This tool seeks to allow a measure of automation without a large investment in development efforts. It is my hope that churches will be able to use this tool to integrate for their own needs. 
+
+Please contact me through the issues to request new features! 
+
+## Installing the PCO CLI
+
+Download the PCO CLI for your platform in the releases page of this repository:
+
+[Releases](https://github.com/kenotron/pco-cli/releases/)
+
+Create a `.env` file by running the `pco` CLI utility once:
+
+```
+$ pco
+```
+
+Now edit this `.env` with the proper values. You'll need to register as a developer at Planning Center.
+
+For security, you need your own developer account key here:
+https://api.planningcenteronline.com/oauth/applications
+
+Create a "Personal Access Token" (PAT) on the 2nd section. This will come in the form of an application ID and a secret. Place this information inside the `.env` next to the `pco-cli` binary
+
+```js
+PCO_APPLICATION_ID=[what you get from application ID]
+PCO_SECRET=[what you get from secret]
+```
+
+# Overview of Planning Center (PCO)
 Planning Center exposes a SINGLE API endpoint that encompass the entire product line. There are samples about how to create integrations with the API:
 https://github.com/orgs/planningcenter/repositories?q=pco_api
 
@@ -41,7 +69,7 @@ Authorization: Basic encodedToken
 There is an API explorer, but one can learn a LOT by using a dedicated REST API tool to set your own headers, etc.:
 https://insomnia.rest/download
 
-# This playground
+# Contributing
 There's just a bit of set up to get this playground running. Make sure you have latest node.js setup:
 
 * https://git-scm.com/ - install latest for platform
@@ -53,8 +81,8 @@ The playground uses TypeScript and might grow to become a good starting point of
 ## Clone & Install Some Dependencies 
 
 ```
-git clone https://github.com/kenotron/playground-planning-center.git
-cd playground-planning-center
+git clone https://github.com/kenotron/pco-cli.git
+cd pco-cli
 yarn
 ```
 
@@ -72,11 +100,21 @@ PCO_APPLICATION_ID=[what you get from application ID]
 PCO_SECRET=[what you get from secret]
 ```
 
-After saving this file, then you're ready to try using the playground scripts to interact with the sample church data.
-
-## Running the sample playground
+## Running the CLI without building
 
 ```
-yarn start
+$ yarn start
+```
+
+## Building a bundle-optimized single JS
+
+```
+$ yarn build
+```
+
+## Packaging the script into an executable binary
+
+```
+$ yarn pkg
 ```
 
