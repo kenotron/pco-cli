@@ -12,8 +12,14 @@ Download the PCO CLI for your platform in the releases page of this repository:
 
 Create a `.env` file by running the `pco` CLI utility once:
 
+On Linux
 ```
-$ pco
+$ ./pco-linux
+```
+
+On Windows
+```
+> pco-win
 ```
 
 Now edit this `.env` with the proper values. You'll need to register as a developer at Planning Center.
@@ -26,6 +32,29 @@ Create a "Personal Access Token" (PAT) on the 2nd section. This will come in the
 ```js
 PCO_APPLICATION_ID=[what you get from application ID]
 PCO_SECRET=[what you get from secret]
+```
+
+# Command / Help
+
+For brevity, we'll use assume you are using Windows for these examples. It is important to get a list 
+of what commands are supported in the current release by running this:
+
+```
+> pco-win --help
+```
+
+## Export Command
+
+To export data from various products with the PCO CLI, issue the command like this
+
+```
+> pco-win export groups
+```
+
+The `groups` above specifies which product to export. By default, it'll export the data and then store the in the `./exported/[date string]/` directory. You can specify the output directory this way:
+
+```
+> pco-win export groups -o c:\temp\
 ```
 
 # Overview of Planning Center (PCO)
