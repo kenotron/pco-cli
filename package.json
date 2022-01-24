@@ -1,24 +1,26 @@
 {
   "name": "planning-center-playground",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
+  "main": "index.js",
   "scripts": {
     "build": "ncc build src/index.ts -o dist",
+    "pkg": "pkg -t node16-linux,node16-win,node16-mac dist/index.js --out-path dist/bin",
     "start": "ts-node --transpile-only src/index.ts"
-  },
-  "devDependencies": {
-    "@types/node": "^16.10.1",
-    "@types/yargs": "^17.0.8",
-    "@types/p-limit": "^2.2.0",
-    "typescript": "^4.5.5",
-    "ts-node": "^10.4.0",
-    "@vercel/ncc": "^0.33.1"
   },
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
     "p-limit": "^3.1.0",
     "yargs": "^17.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.1",
+    "@types/p-limit": "^2.2.0",
+    "@types/yargs": "^17.0.8",
+    "@vercel/ncc": "^0.33.1",
+    "pkg": "^5.5.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
   }
 }

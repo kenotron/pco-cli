@@ -59,11 +59,10 @@ export class PlanningCenterClient {
       return await axios({ ...config, method: "get" });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 429) {
-        console.warn(`${error.response?.request?.url} quota limit hit!`);
+        const delay = error.response?.headers["retry-after"] || error.response?.headers["Retry-After"];
+        console.warn(`${error.response?.config.url} quota limit hit, waiting ${delay}s!`);
 
-        this.createRetryRateLimiter(
-          parseInt(error.response?.headers["retry-after"] || error.response?.headers["Retry-After"])
-        );
+        this.createRetryRateLimiter(parseInt(delay));
 
         return await this.getQuery(product, resource, searchParams);
       }
@@ -111,7 +110,7 @@ export class PlanningCenterClient {
 
       if (response.data.links?.next) {
         const url = new URL(response.data.links?.next);
-        offset = url.searchParams.get("offset")!
+        offset = url.searchParams.get("offset")!;
       }
     } while (Array.isArray(response.data?.data) && count < total);
   }
