@@ -55,16 +55,21 @@ export class PlanningCenterClient {
     // wait outstanding retry rate limit
     await this.retryAfterRateLimit();
 
-    const response = await axios({ ...config, method: "get" });
+    try {
+      return await axios({ ...config, method: "get" });
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 429) {
+        console.warn(`${error.response?.request?.url} quota limit hit!`);
 
-    if (response.status === 429) {
-      this.createRetryRateLimiter(parseInt(response.headers["retry-after"] || response.headers["Retry-After"]));
-      return await this.getQuery(product, resource, searchParams);
-    } else if (response.status >= 200 && response.status < 300) {
-      return response;
+        this.createRetryRateLimiter(
+          parseInt(error.response?.headers["retry-after"] || error.response?.headers["Retry-After"])
+        );
+
+        return await this.getQuery(product, resource, searchParams);
+      }
+
+      throw error;
     }
-
-    return response;
   }
 
   /**
@@ -75,15 +80,16 @@ export class PlanningCenterClient {
    * @returns
    */
   async *get(product: PlanningCenterProduct, resource: string) {
-    const perPage = 100;
-    let offset = 0;
+    const perPage = "100";
+    let offset = "0";
+    let count = 0;
     let total = 0;
     let response;
 
     do {
       response = await this.getQuery(product, resource, {
-        per_page: perPage.toString(),
-        offset: offset.toString(),
+        per_page: perPage,
+        offset,
       });
 
       if (response.data.meta.total_count) {
@@ -93,6 +99,7 @@ export class PlanningCenterClient {
       if (response.data) {
         if (Array.isArray(response.data.data)) {
           for (const row of response.data.data) {
+            count++;
             yield row;
           }
         } else {
@@ -100,7 +107,12 @@ export class PlanningCenterClient {
         }
       }
 
-      offset += perPage;
-    } while (Array.isArray(response.data) && response.data.length < total);
+      console.log(`got ${product}: ${resource} - offset ${offset}, count ${response.data.data.length}, total ${total}`);
+
+      if (response.data.links?.next) {
+        const url = new URL(response.data.links?.next);
+        offset = url.searchParams.get("offset")!
+      }
+    } while (Array.isArray(response.data?.data) && count < total);
   }
 }

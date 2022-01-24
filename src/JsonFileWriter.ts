@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 export class JsonFileWriter {
   private _writeStream;
+  private _firstRow = true;
   constructor(filename: string) {
     const dirname = path.dirname(filename);
     if (!fs.existsSync(dirname)) {
@@ -12,7 +13,12 @@ export class JsonFileWriter {
   }
 
   append(row: any) {
-    this._writeStream.write(JSON.stringify(row) + ",");
+    if (!this._firstRow) {
+      this._firstRow = false;
+      this._writeStream.write(",");
+    }
+
+    this._writeStream.write(JSON.stringify(row));
   }
 
   close() {
