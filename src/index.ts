@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import pLimit from "p-limit";
 import path from "path/posix";
 import yargs from "yargs";
 import { exportCommand } from "./commands/exportCommand";
