@@ -4,16 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "build": "ncc build src/index.ts -o dist",
     "start": "ts-node --transpile-only src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^16.10.1",
-    "typescript": "^4.4.3",
-    "ts-node": "^10.2.1"
+    "@types/yargs": "^17.0.8",
+    "@types/p-limit": "^2.2.0",
+    "typescript": "^4.5.5",
+    "ts-node": "^10.4.0",
+    "@vercel/ncc": "^0.33.1"
   },
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
-    "p-limit": "^3.1.0"
+    "p-limit": "^3.1.0",
+    "yargs": "^17.3.1"
   }
 }

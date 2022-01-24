@@ -10,7 +10,6 @@ export interface QueryParams {
  * A PlanningCenter Online HTTP (JSON:API) client with error handling of rate limits
  */
 export class PlanningCenterClient {
-  private requestRetryAfter: number = 20;
   private retryPromise: Promise<void> | undefined;
 
   constructor(private applicationKey: string, private secret: string) {}
@@ -35,16 +34,15 @@ export class PlanningCenterClient {
   }
 
   retryAfterRateLimit() {
-    if (this.retryPromise) {
-      return this.retryPromise;
-    }
+    return this.retryPromise || Promise.resolve();
+  }
 
+  createRetryRateLimiter(retryAfter: number) {
     this.retryPromise = new Promise<void>((resolve, _reject) => {
-      console.log(`rate limit is hit, waiting for ${this.requestRetryAfter}s`)
-      setTimeout(resolve, this.requestRetryAfter * 1000);
+      setTimeout(resolve, retryAfter * 1000);
     });
 
-    return this.retryPromise;
+    return this.retryAfterRateLimit;
   }
 
   async getQuery(
@@ -53,28 +51,37 @@ export class PlanningCenterClient {
     searchParams?: QueryParams
   ): Promise<AxiosResponse<any>> {
     const config = this.createQueryConfig(product, resource, searchParams);
+
+    // wait outstanding retry rate limit
+    await this.retryAfterRateLimit();
+
     const response = await axios({ ...config, method: "get" });
 
-    // Too many requests - rate limit
     if (response.status === 429) {
-      await this.retryAfterRateLimit();
+      this.createRetryRateLimiter(parseInt(response.headers["retry-after"] || response.headers["Retry-After"]));
       return await this.getQuery(product, resource, searchParams);
     } else if (response.status >= 200 && response.status < 300) {
-      this.requestRetryAfter = parseInt(response.headers["Retry-After"]);
       return response;
     }
 
     return response;
   }
 
-  async get<T>(product: PlanningCenterProduct, resource: string): Promise<T> {
+  /**
+   * Gets a resource from a product: handles pagination for lists of items, as well as single item
+   *
+   * @param product
+   * @param resource
+   * @returns
+   */
+  async *get(product: PlanningCenterProduct, resource: string) {
     const perPage = 100;
     let offset = 0;
     let total = 0;
-    let results: unknown;
+    let response;
 
     do {
-      const response = await this.getQuery(product, resource, {
+      response = await this.getQuery(product, resource, {
         per_page: perPage.toString(),
         offset: offset.toString(),
       });
@@ -85,18 +92,15 @@ export class PlanningCenterClient {
 
       if (response.data) {
         if (Array.isArray(response.data.data)) {
-          results = results ?? [];
           for (const row of response.data.data) {
-            (results as any[]).push(row);
+            yield row;
           }
         } else {
-          results = response.data;
+          return response.data;
         }
       }
 
       offset += perPage;
-    } while (Array.isArray(results) && results.length < total);
-
-    return results as T;
+    } while (Array.isArray(response.data) && response.data.length < total);
   }
 }
