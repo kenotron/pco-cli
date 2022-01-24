@@ -22,7 +22,7 @@ yargs(process.argv.slice(2))
         .options("outdir", {
           alias: ["o"],
           description: "output directory",
-          default: path.join(process.cwd(), "exported", new Date().toISOString()),
+          default: path.join("exported", new Date().toISOString().replace(/[T\:\.]/ig, '-')),
         }),
     (args) => {
       exportCommand(args);
